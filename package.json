@@ -1,0 +1,22 @@
+{
+  "name": "christiannews",
+  "version": "1.0.0",
+  "description": "Aggregator of christian blogs, articles and tweets",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmh3258/ChristianNews.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cmh3258/ChristianNews/issues"
+  },
+  "homepage": "https://github.com/cmh3258/ChristianNews#readme",
+  "devDependencies": {
+    "bower": "^1.4.1"
+  }
+}

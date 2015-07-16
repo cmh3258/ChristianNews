@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title>Flask React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styles -->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Flask React</h1>
+      <br>
+      <div id="content"></div>
+    </div>
+    <!-- scripts -->
+    <script src="{{ url_for('static', filename='bower_components/react/react.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/react/JSXTransformer.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+
+    <script type="text/jsx">
+      /*** @jsx React.DOM */
+
+      var Comment = React.createClass({
+        render: function() {
+          return (
+            <div className="comment">
+              <h2 className="commentAuthor">
+                {this.props.author}
+              </h2>
+              {this.props.children}
+            </div>
+          );
+        }
+      });
+
+      // tutorial10.js
+      var CommentList = React.createClass({
+        render: function() {
+          var commentNodes = this.props.data.map(function (comment) {
+            return (
+              <Comment author={comment.name}>
+                {comment.text}
+              </Comment>
+            );
+          });
+          return (
+            <div className="commentList">
+              {commentNodes}
+            </div>
+          );
+        }
+      });
+/*
+      var CommentBox = React.createClass({
+        render: function() {
+          return (
+            <div className="commentBox">
+              <h1>Comments</h1>
+              <CommentList data={this.props.data} />
+            </div>
+          );
+        }
+      });*/
+
+      // tutorial12.js
+      // tutorial13.js
+      var CommentBox = React.createClass({
+        getInitialState: function() {
+          return {data: []};
+        },
+        componentDidMount: function() {
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+              this.setState({data: data});
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+        render: function() {
+          return (
+            <div className="commentBox">
+              <h1>Comments</h1>
+              <CommentList data={this.state.data} />
+            </div>
+          );
+        }
+      });
+      /*React.render(
+        React.createElement(Comment, null),
+        document.getElementById('content')
+      );*/
+
+      React.render(
+        <CommentBox url="http://127.0.0.1:5000/twit"/>,
+        document.getElementById('content')
+      );
+    </script>
+
+  </body>
+</html>

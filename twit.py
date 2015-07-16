@@ -11,10 +11,23 @@ api = twitter.Api(consumer_key='m5pAMifKNfva3eLKZ9UF5br4k',
 #users = api.GetFriends()
 #print [u for u in users]
 
+list_of_posts = []
+
 statuses = api.GetUserTimeline(screen_name='kvministries')
 for s in statuses:
-  print '---Created: ', s.created_at
-  print '---Favorited: ', s.favorite_count
-  print '---Name: ', s.user.screen_name
-  print '---Text: ', s.text
-  print '---Img: ', s.user.profile_image_url, '\n'
+  post_object = {
+    'type_of_post' : 'short',
+    'date' : s.created_at,
+    'favorite_count' :  s.favorite_count,
+    'name' : s.user.screen_name,
+    'text' : s.text,
+    'profile_image' : s.user.profile_image_url 
+  }
+  list_of_posts.append(post_object)
+
+  # print '---Created: ', s.created_at
+  # print '---Favorited: ', s.favorite_count
+  # print '---Name: ', s.user.screen_name
+  # print '---Text: ', s.text
+  # print '---Img: ', s.user.profile_image_url, '\n'
+print list_of_posts
