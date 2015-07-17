@@ -12,16 +12,34 @@ api = twitter.Api(consumer_key='m5pAMifKNfva3eLKZ9UF5br4k',
 #print [u for u in users]
 
 list_of_posts = []
-
-statuses = api.GetUserTimeline(screen_name='kvministries')
+screen_name = 'kvministries'
+statuses = api.GetUserTimeline(screen_name=screen_name)
 for s in statuses:
+  # print s, '\n'
+  link = 'https://twitter.com/'+ screen_name +'/status/'+ str(s.id)
+  # postText = s.text
+  # img_in_post = postText
+  # if(postText.find('http') != -1):
+  #   indexOfHttp = postText.index('http')
+  #   img_in_post = postText[indexOfHttp:]
+  # else:
+  #   img_in_post = ''
+  try:
+    # print 'media? ', s.media[0].media[0], '\n'
+    img_in_post = s.media[0]['media_url_https']
+    print 'img_in_post: ', img_in_post
+  except:
+    img_in_post = ''
+
   post_object = {
-    'type_of_post' : 'short',
+    'type_of_post' : 'tweet',
     'date' : s.created_at,
     'favorite_count' :  s.favorite_count,
     'name' : s.user.screen_name,
     'text' : s.text,
-    'profile_image' : s.user.profile_image_url 
+    'profile_image' : s.user.profile_image_url,
+    'link_to_post' : link,
+    'img_in_post' : img_in_post
   }
   list_of_posts.append(post_object)
 
@@ -30,4 +48,5 @@ for s in statuses:
   # print '---Name: ', s.user.screen_name
   # print '---Text: ', s.text
   # print '---Img: ', s.user.profile_image_url, '\n'
-print list_of_posts
+# print list_of_posts
+

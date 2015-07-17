@@ -1,1 +1,37 @@
 /* custom styles */
+
+.commentBox{
+  width: 60%;
+  margin: 0 auto;
+}
+
+.comment{
+  overflow: auto;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+.content-left{
+  width:8%;
+  float: left;
+}
+
+.content-middle{
+  width: 80%;
+  float: left;
+}
+    .content-middle h2{
+      margin: 0;
+    }
+    .content-middle .date{
+      font-size: 14px;
+      font-weight: lighter;
+    }
+    .hidden{
+      display: none;
+    }
+
+.content-right{
+  width:12%;
+  float: right;
+}

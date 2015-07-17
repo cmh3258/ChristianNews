@@ -20,19 +20,41 @@ def hello():
 @app.route('/twit')
 def twit():
   list_of_posts = []
-  statuses = api.GetUserTimeline(screen_name='kvministries')
+  screen_name = 'kvministries'
+  statuses = api.GetUserTimeline(screen_name=screen_name)
   for s in statuses:
+    # print s, '\n'
+    link = 'https://twitter.com/'+ screen_name +'/status/'+ str(s.id)
+    # postText = s.text
+    # img_in_post = postText
+    # if(postText.find('http') != -1):
+    #   indexOfHttp = postText.index('http')
+    #   img_in_post = postText[indexOfHttp:]
+    # else:
+    #   img_in_post = ''
+
+    try:
+      img_in_post = s.media[0]['media_url_https']
+    except:
+      img_in_post = ''
+
     post_object = {
-      'type_of_post' : 'short',
+      'type_of_post' : 'tweet',
       'date' : s.created_at,
       'favorite_count' :  s.favorite_count,
       'name' : s.user.screen_name,
       'text' : s.text,
-      'profile_image' : s.user.profile_image_url 
+      'profile_image' : s.user.profile_image_url,
+      'link_to_post' : link,
+      'img_in_post' : img_in_post
     }
     list_of_posts.append(post_object)
 
   return json.dumps(list_of_posts)
 
+
 if __name__ == '__main__':
     app.run()
+
+
+
