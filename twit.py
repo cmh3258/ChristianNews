@@ -1,5 +1,6 @@
 
-import twitter
+import twitter, time
+from dateutil import parser
 
 api = twitter.Api(consumer_key='m5pAMifKNfva3eLKZ9UF5br4k',
                       consumer_secret='1spceNsdfZ9dQkpFDtrSd9BDobBUYAXm3LBK82JzaGxSTIMef9',
@@ -24,6 +25,14 @@ for s in statuses:
   #   img_in_post = postText[indexOfHttp:]
   # else:
   #   img_in_post = ''
+
+  # print 's ', s.created_at
+  date = parser.parse(s.created_at)
+  # print 'd ', date
+  #Sat Jul 18 13:00:41 +0000 2015
+  #print 'time -> ',time.strptime(s.created_at, '%a %d %m %H:%M:%S %z %Y')
+
+
   try:
     # print 'media? ', s.media[0].media[0], '\n'
     img_in_post = s.media[0]['media_url_https']
@@ -33,7 +42,7 @@ for s in statuses:
 
   post_object = {
     'type_of_post' : 'tweet',
-    'date' : s.created_at,
+    'date' : date,
     'favorite_count' :  s.favorite_count,
     'name' : s.user.screen_name,
     'text' : s.text,
@@ -49,4 +58,10 @@ for s in statuses:
   # print '---Text: ', s.text
   # print '---Img: ', s.user.profile_image_url, '\n'
 # print list_of_posts
+
+list_of_posts.sort(key=lambda date: date, reverse=True)
+print list_of_posts
+
+
+
 

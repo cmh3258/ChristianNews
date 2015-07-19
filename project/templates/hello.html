@@ -28,7 +28,7 @@
           return (
             <div className="comment">
               <div className="content-left">
-                <img src={this.props.profile_image} alt="profile_image"/>
+                <img src={this.props.profile_image} alt="profile_image" className={this.props.type_of_post == 'tweet' ? '' : 'profileImageSmall'}/>
               </div>
               <div className="content-middle">
                 <h2 className="commentAuthor">
@@ -40,7 +40,7 @@
                 <a href={this.props.link_to_post} target="_blank">go to post</a>
                 <p>{this.props.favorite_count}</p>
               </div>
-              <div>
+              <div className="contentImg">
                 <img src={this.props.img_in_post} alt="no image" className={this.props.img_in_post ? '' : 'hidden'}/>
                 <p>{this.props.img_in_post}</p>
               </div>
@@ -65,7 +65,7 @@
         render: function() {
           var commentNodes = this.props.data.map(function (comment) {
             return (
-              <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post}>
+              <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post}>
               </Comment>
             );
           });
