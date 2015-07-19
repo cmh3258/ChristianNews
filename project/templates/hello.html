@@ -63,10 +63,29 @@
       // tutorial10.js
       var CommentList = React.createClass({
         render: function() {
-          var commentNodes = this.props.data.map(function (comment) {
+          var commentNodes = this.props.list_of_posts.map(function (comment) {
+            console.log('comment2 ', comment);
             return (
               <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post}>
               </Comment>
+            );
+          });
+          return (
+            <div className="commentList">
+              <h1>{this.props.weekday}</h1>
+              {commentNodes}
+            </div>
+          );
+        }
+      });
+
+      var PostsByDate = React.createClass({
+        render: function() {
+          var commentNodes = this.props.data.map(function (comment) {
+            console.log('comment1 ', comment);
+            return (
+              <CommentList day={comment.day} month={comment.month} weekday={comment.weekday} year={comment.year} list_of_posts={comment.list_of_posts}>
+              </CommentList>
             );
           });
           return (
@@ -76,6 +95,7 @@
           );
         }
       });
+
 /*
       var CommentBox = React.createClass({
         render: function() {
@@ -111,7 +131,7 @@
           return (
             <div className="commentBox">
               <h1>Comments</h1>
-              <CommentList data={this.state.data} />
+              <PostsByDate data={this.state.data} />
             </div>
           );
         }

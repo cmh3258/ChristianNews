@@ -109,17 +109,63 @@ def twit():
   
   # print list_of_posts
   # print 'hi'
+  posts_by_date = []
   for x in list_of_posts:
     # print x
-    x['date'] = x['date'].isoformat()
+    # print x['date'].day, x['date'].month
+
+    fountPost = False
+    for date in posts_by_date:
+      if date['day'] == x['date'].day and date['month'] == x['date'].month and date['year'] == x['date'].year:
+        x['date'] = x['date'].isoformat()
+        date['list_of_posts'].append(x)
+        fountPost = True
+    
+    if not fountPost:
+      weekday = x['date'].weekday()
+      if weekday == 0:
+        weekday = 'Monday'
+      elif weekday == 1:
+        weekday = 'Tuesday'
+      elif weekday == 2:
+        weekday = 'Wednesday'
+      elif weekday == 3:
+        weekday = 'Thursday'
+      elif weekday == 4:
+        weekday = 'Friday'
+      elif weekday == 5:
+        weekday = 'Saturday'
+      else:
+        weekday = 'Sunday'
+
+      temp_post = {
+        'day':x['date'].day,
+        'weekday':weekday,
+        'month':x['date'].month,
+        'year':x['date'].year,
+        'list_of_posts':[]
+      }
+      x['date'] = x['date'].isoformat()
+      temp_post['list_of_posts'].append(x)
+      posts_by_date.append(temp_post)
+
+    # x['date'] = x['date'].isoformat()
     # print x['name']
-    print x['date']
+    # print x['date']
+
+  '''
+    possible ways to have list of posts from that date
+
+    [{day:1, month:3, list_of_posts:[]},{}]
+  '''
 
     # print time.strptime(x['date'], "%Y-%m-%d")
     # print x['type_of_post']
 
+  # print json.dumps(posts_by_date, indent=3)
+  return json.dumps(posts_by_date)
 
-  return json.dumps(list_of_posts)
+  # return json.dumps(list_of_posts)
 
 
 if __name__ == '__main__':
