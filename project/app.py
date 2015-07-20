@@ -29,42 +29,44 @@ def twit():
   # print utc.zone
 
   list_of_posts = []
-  screen_name = 'kvministries'
-  statuses = api.GetUserTimeline(screen_name=screen_name)
-  for s in statuses:
-    # print s, '\n'
-    link = 'https://twitter.com/'+ screen_name +'/status/'+ str(s.id)
-    # postText = s.text
-    # img_in_post = postText
-    # if(postText.find('http') != -1):
-    #   indexOfHttp = postText.index('http')
-    #   img_in_post = postText[indexOfHttp:]
-    # else:
-    #   img_in_post = ''
-    # print 'hi ', s.created_at
-    date = parser.parse(s.created_at)
-    # print newdate
-    # print strptime(newdate)
-    # date = utc.localize(newdate)
-    # print date
+  screen_names = ['kvministries','BillVanderbush','TraciVanderbush','billjohnsonBJM','shawnbolz'
+,'DrHeidiBaker','GeorgianBanov','che_ahn','lancewallnau','brianjohnsonM','jeramenelson','Jeff_Jansen','ChristineCaine']
+  for screen_name in screen_names:
+    statuses = api.GetUserTimeline(screen_name=screen_name)
+    for s in statuses:
+      # print s, '\n'
+      link = 'https://twitter.com/'+ screen_name +'/status/'+ str(s.id)
+      # postText = s.text
+      # img_in_post = postText
+      # if(postText.find('http') != -1):
+      #   indexOfHttp = postText.index('http')
+      #   img_in_post = postText[indexOfHttp:]
+      # else:
+      #   img_in_post = ''
+      # print 'hi ', s.created_at
+      date = parser.parse(s.created_at)
+      # print newdate
+      # print strptime(newdate)
+      # date = utc.localize(newdate)
+      # print date
 
-    try:
-      img_in_post = s.media[0]['media_url_https']
-    except:
-      img_in_post = ''
+      try:
+        img_in_post = s.media[0]['media_url_https']
+      except:
+        img_in_post = ''
 
-    post_object = {
-      'type_of_post' : 'tweet',
-      'date' : date,
-      'favorite_count' : s.favorite_count,
-      'name' : s.user.screen_name,
-      'text' : s.text,
-      'profile_image' : s.user.profile_image_url,
-      'link_to_post' : link,
-      'img_in_post' : img_in_post
-    }
-    list_of_posts.append(post_object)
-    # print '------->a'
+      post_object = {
+        'type_of_post' : 'tweet',
+        'date' : date,
+        'favorite_count' : s.favorite_count,
+        'name' : s.user.screen_name,
+        'text' : s.text,
+        'profile_image' : s.user.profile_image_url,
+        'link_to_post' : link,
+        'img_in_post' : img_in_post
+      }
+      list_of_posts.append(post_object)
+      # print '------->a'
 
 
   '''
@@ -95,10 +97,31 @@ def twit():
       'img_in_post' : figure.find('img')['data-src']
     }
     list_of_posts.append(post_object)
-    # list_of_posts.sort(key=lambda r: r.date, reverse=True)
-    # print '----> ', list_of_posts
 
-    # print '------>b'
+  '''
+    The gospel coalition - scraping front page articles
+  '''
+  r = requests.get('http://www.thegospelcoalition.org/archive')
+
+  data = r.text
+  soup = BeautifulSoup(data)
+  for item in soup.find_all('article', class_="article-item"):
+    
+    date = parser.parse(item.find('time', class_='article-item__date').get_text())
+    date = pytz.utc.localize(date)
+
+    post_object = {
+      'type_of_post' : 'article',
+      'date' : date,
+      'favorite_count' : 0,
+      'name' : item.find('h1', class_='article-item__title').find('a').get_text(),
+      'text' : item.find('p', class_='article-item__excerpt').get_text(),
+      'profile_image' : 'http://s3.amazonaws.com/tgc-ee2/articles/tgclogo.jpg',
+      'link_to_post' : 'http://www.thegospelcoalition.org/'+item.find('a', class_='article-item__read').get('href'),
+      'img_in_post' : 'http://www.thegospelcoalition.org/'+item.find('img', class_='article-item__img')['src']
+    }
+    list_of_posts.append(post_object)
+
 
   # print list_of_posts
   try:
