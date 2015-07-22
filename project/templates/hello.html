@@ -23,6 +23,24 @@
     <script type="text/jsx">
       /*** @jsx React.DOM */
 
+      var SaveButton = React.createClass({
+        getInitialState: function() {
+          return {post: ''};
+        },
+        handleClick: function(event) {
+          console.log('event ', event);
+          this.setState({post: '1'});
+        },
+        render: function() {
+          var text = this.state.liked ? 'like' : 'haven\'t liked';
+          return (
+            <p onClick={this.handleClick}>
+              You {text} this. Click to toggle.
+            </p>
+          );
+        }
+      });
+
       var Comment = React.createClass({
         render: function() {
           return (
@@ -62,20 +80,41 @@
 
       // tutorial10.js
       var CommentList = React.createClass({
+        handleClick: function(i) {
+          console.log('You clicked: ', i);
+        },
         render: function() {
-          var commentNodes = this.props.list_of_posts.map(function (comment) {
+          return (
+            <div>
+            <h1>{this.props.weekday} {this.props.month}/{this.props.day}/{this.props.year}</h1>
+            
+              {this.props.list_of_posts.map(function(comment) {
+                return (
+                  <div>
+                  <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post}>
+                  </Comment>
+                  <div onClick={this.handleClick.bind(this, comment)}>click me</div>
+                  </div>
+                );
+              }, this)}
+            </div>
+          );
+          /*var commentNodes = this.props.list_of_posts.map(function (comment) {
             console.log('comment2 ', comment);
             return (
+              <div>
               <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post}>
               </Comment>
+              <div onClick={handleClick.bind(this, comment)}>click me!</div>
+              </div>
             );
           });
           return (
             <div className="commentList">
-              <h1>{this.props.weekday}</h1>
+              <h1>{this.props.weekday} {this.props.month}/{this.props.day}/{this.props.year}</h1>
               {commentNodes}
             </div>
-          );
+          );*/
         }
       });
 
@@ -130,7 +169,6 @@
         render: function() {
           return (
             <div className="commentBox">
-              <h1>Comments</h1>
               <PostsByDate data={this.state.data} />
             </div>
           );

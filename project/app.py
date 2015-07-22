@@ -6,6 +6,9 @@ from dateutil import parser
 from pytz import timezone
 import pytz
 
+from pymongo import MongoClient
+client = MongoClient('mongodb://localhost:27017/')
+
 
 app = Flask(__name__)
 
@@ -22,6 +25,11 @@ def index():
 @app.route('/hello')
 def hello():
     return render_template('hello.html')
+
+@app.route('/savepost', methods=["POST"])
+def savepost():
+  print request.json
+  return
 
 @app.route('/twit')
 def twit():
