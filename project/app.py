@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from bs4 import BeautifulSoup
 import twitter, json, requests, time, sys, datetime
 from dateutil import parser
@@ -28,8 +28,22 @@ def hello():
 
 @app.route('/savepost', methods=["POST"])
 def savepost():
-  print request.json
-  return
+  print 'in savepost. bro'
+  try:
+    print request
+  except:
+    e = sys.exc_info()[0]
+    print 'cant print request. ', e
+
+  if not request.json:
+    return 'No request.json', 400
+  else:
+    print 'JSON ', request.json
+  # # print request
+  # if not request.json:
+  #   return 'No request.json'
+  # # print request
+  return 'testing', 200
 
 @app.route('/twit')
 def twit():
@@ -38,19 +52,19 @@ def twit():
 
   list_of_posts = []
   screen_names = ['kvministries','BillVanderbush','TraciVanderbush','billjohnsonBJM','shawnbolz'
-,'DrHeidiBaker','GeorgianBanov','che_ahn','lancewallnau','brianjohnsonM','jeramenelson','Jeff_Jansen','ChristineCaine']
+,'DrHeidiBaker','GeorgianBanov','che_ahn','lancewallnau','brianjohnsonM','jeramenelson','Jeff_Jansen','ChristineCaine','LauraMHackett']
   for screen_name in screen_names:
     statuses = api.GetUserTimeline(screen_name=screen_name)
     for s in statuses:
       # print s, '\n'
       link = 'https://twitter.com/'+ screen_name +'/status/'+ str(s.id)
-      # postText = s.text
+      postText = s.text
       # img_in_post = postText
-      # if(postText.find('http') != -1):
-      #   indexOfHttp = postText.index('http')
-      #   img_in_post = postText[indexOfHttp:]
-      # else:
-      #   img_in_post = ''
+      if(postText.find('http') != -1):
+        indexOfHttp = postText.index('http')
+        outside_link = postText[indexOfHttp:]
+      else:
+        outside_link = ''
       # print 'hi ', s.created_at
       date = parser.parse(s.created_at)
       # print newdate
@@ -71,7 +85,8 @@ def twit():
         'text' : s.text,
         'profile_image' : s.user.profile_image_url,
         'link_to_post' : link,
-        'img_in_post' : img_in_post
+        'img_in_post' : img_in_post,
+        'outside_link' : outside_link
       }
       list_of_posts.append(post_object)
       # print '------->a'

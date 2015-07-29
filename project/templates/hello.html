@@ -53,9 +53,11 @@
                   {this.props.name} <span className="date">{this.props.date}</span>
                 </h2>
                 <p>{this.props.text}</p>
+                
               </div>
               <div className="content-right">
                 <a href={this.props.link_to_post} target="_blank">go to post</a>
+                <a href={this.props.outside_link} target="_blank" className={this.props.outside_link ? '' : 'hidden'}>link</a>
                 <p>{this.props.favorite_count}</p>
               </div>
               <div className="contentImg">
@@ -82,6 +84,26 @@
       var CommentList = React.createClass({
         handleClick: function(i) {
           console.log('You clicked: ', i);
+          $.ajax({
+            url: 'http://127.0.0.1:5000/savepost',
+            method: 'POST',
+            data: JSON.stringify(i),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(data){
+              console.log('success:', data);
+            },
+            error: function(data) {
+              console.error('savepost:', data);
+            }
+            
+            // success: function(data) {
+            //   // this.setState({data: data});
+            //   console.log('success data : ', data);
+            // }.bind(this),
+            // error: function(xhr, status, err) {
+            //   console.error(this.props.url, status, err.toString());
+            // }.bind(this)
+          });
         },
         render: function() {
           return (
@@ -91,37 +113,21 @@
               {this.props.list_of_posts.map(function(comment) {
                 return (
                   <div>
-                  <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post}>
+                  <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post} outside_link={comment.outside_link}>
                   </Comment>
-                  <div onClick={this.handleClick.bind(this, comment)}>click me</div>
+                  <button onClick={this.handleClick.bind(this, comment)}>save</button>
                   </div>
                 );
               }, this)}
             </div>
           );
-          /*var commentNodes = this.props.list_of_posts.map(function (comment) {
-            console.log('comment2 ', comment);
-            return (
-              <div>
-              <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post}>
-              </Comment>
-              <div onClick={handleClick.bind(this, comment)}>click me!</div>
-              </div>
-            );
-          });
-          return (
-            <div className="commentList">
-              <h1>{this.props.weekday} {this.props.month}/{this.props.day}/{this.props.year}</h1>
-              {commentNodes}
-            </div>
-          );*/
         }
       });
 
       var PostsByDate = React.createClass({
         render: function() {
           var commentNodes = this.props.data.map(function (comment) {
-            console.log('comment1 ', comment);
+            // console.log('comment1 ', comment);
             return (
               <CommentList day={comment.day} month={comment.month} weekday={comment.weekday} year={comment.year} list_of_posts={comment.list_of_posts}>
               </CommentList>
@@ -135,20 +141,7 @@
         }
       });
 
-/*
-      var CommentBox = React.createClass({
-        render: function() {
-          return (
-            <div className="commentBox">
-              <h1>Comments</h1>
-              <CommentList data={this.props.data} />
-            </div>
-          );
-        }
-      });*/
 
-      // tutorial12.js
-      // tutorial13.js
       var CommentBox = React.createClass({
         getInitialState: function() {
           return {data: []};
