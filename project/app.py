@@ -6,9 +6,12 @@ from dateutil import parser
 from pytz import timezone
 import pytz
 
+from bson import Binary, Code
+from bson.json_util import dumps
+
 from pymongo import MongoClient
 client = MongoClient('mongodb://localhost:27017/')
-
+db = client['test-database']
 
 app = Flask(__name__)
 
@@ -26,6 +29,24 @@ def index():
 def hello():
     return render_template('hello.html')
 
+@app.route('/savedposts')
+def savedposts():
+  try:
+    return_posts = []
+    posts = list(db.posts.find())
+    print 'POSTS: ', posts
+    #for post in posts.find():
+      # print post
+    #  return_posts.append(post)
+    #print 'RETUNRING: ', jsonify(return_posts)
+    return dumps(posts)
+  except ValueError, e:
+    print 'VE: ', e
+  except TypeError, e:
+    print 'TE: ', e
+  except RuntimeError, e:
+    print 'RE: ', e
+
 @app.route('/savepost', methods=["POST"])
 def savepost():
   print 'in savepost. bro'
@@ -38,12 +59,16 @@ def savepost():
   if not request.json:
     return 'No request.json', 400
   else:
+    posts = db.posts
+    post_id = posts.insert_one(request.json).inserted_id
     print 'JSON ', request.json
+    print 'post_id: ', post_id
+
   # # print request
   # if not request.json:
   #   return 'No request.json'
   # # print request
-  return 'testing', 200
+    return 'testing', 200
 
 @app.route('/twit')
 def twit():
