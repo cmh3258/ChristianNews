@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head lang="en">
+    <meta charset="UTF-8">
+    <title>Flask React</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- styles -->
+  </head>
+  <body>
+    <div class="container">
+      <h1>Flask React</h1>
+      <br>
+      <div id="content"></div>
+    </div>
+    <!-- scripts -->
+    <script src="{{ url_for('static', filename='bower_components/react/react.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/react/JSXTransformer.js') }}"></script>
+    <script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+
+    <script type="text/jsx">
+      /*** @jsx React.DOM */
+
+      var SaveButton = React.createClass({
+        getInitialState: function() {
+          return {post: ''};
+        },
+        handleClick: function(event) {
+          console.log('event ', event);
+          this.setState({post: '1'});
+        },
+        render: function() {
+          var text = this.state.liked ? 'like' : 'haven\'t liked';
+          return (
+            <p onClick={this.handleClick}>
+              You {text} this. Click to toggle.
+            </p>
+          );
+        }
+      });
+
+      var Comment = React.createClass({
+        render: function() {
+          return (
+            <div className="comment">
+              <div className="content-left">
+                <img src={this.props.profile_image} alt="profile_image" className={this.props.type_of_post == 'tweet' ? '' : 'profileImageSmall'}/>
+              </div>
+              <div className="content-middle">
+                <h2 className="commentAuthor">
+                  {this.props.name} <span className="date">{this.props.date}</span>
+                </h2>
+                <p>{this.props.text}</p>
+                
+              </div>
+              <div className="content-right">
+                <a href={this.props.link_to_post} target="_blank">go to post</a>
+                <a href={this.props.outside_link} target="_blank" className={this.props.outside_link ? '' : 'hidden'}>link</a>
+                <p>{this.props.favorite_count}</p>
+              </div>
+              <div className="contentImg">
+                <img src={this.props.img_in_post} alt="no image" className={this.props.img_in_post ? '' : 'hidden'}/>
+                <p>{this.props.img_in_post}</p>
+              </div>
+            </div>
+          );
+        }
+      });
+
+
+      /*
+        type_of_post
+        date
+        favorite_count
+        name
+        text
+        profile_image
+        link_to_post
+      */
+
+      // tutorial10.js
+      var CommentList = React.createClass({
+        handleClick: function(i) {
+          console.log('You clicked: ', i);
+          $.ajax({
+            url: 'http://127.0.0.1:5000/savepost',
+            method: 'POST',
+            data: JSON.stringify(i),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(data){
+              console.log('success:', data);
+            },
+            error: function(data) {
+              console.error('savepost:', data);
+            }
+            
+            // success: function(data) {
+            //   // this.setState({data: data});
+            //   console.log('success data : ', data);
+            // }.bind(this),
+            // error: function(xhr, status, err) {
+            //   console.error(this.props.url, status, err.toString());
+            // }.bind(this)
+          });
+        },
+        render: function() {
+          return (
+            <div>
+            
+              {this.props.list_of_posts.map(function(comment) {
+                return (
+                  <div>
+                  <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post} outside_link={comment.outside_link}>
+                  </Comment>
+                  </div>
+                );
+              }, this)}
+            </div>
+          );
+        }
+      });
+
+      var PostsByDate = React.createClass({
+        render: function() {
+          var commentNodes = this.props.data.map(function (comment) {
+            console.log('comment1 ', comment);
+            return (
+              <CommentList day={comment.day} month={comment.month} weekday={comment.weekday} year={comment.year} list_of_posts={comment.list_of_posts}>
+              </CommentList>
+            );
+          });
+          return (
+            <div className="commentList">
+              {commentNodes}
+            </div>
+          );
+        }
+      });
+
+
+      var CommentBox = React.createClass({
+        getInitialState: function() {
+          return {data: []};
+        },
+        componentDidMount: function() {
+          $.ajax({
+            url: this.props.url,
+            dataType: 'json',
+            cache: false,
+            success: function(data) {
+              this.setState({data: data});
+              console.log('data: ', data);
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+            }.bind(this)
+          });
+        },
+        render: function() {
+          return (
+            <div className="commentBox">
+              <CommentList list_of_posts={this.state.data} />
+            </div>
+          );
+        }
+      });
+      /*React.render(
+        React.createElement(Comment, null),
+        document.getElementById('content')
+      );*/
+
+      React.render(
+        <CommentBox url="http://127.0.0.1:5000/savedposts"/>,
+        document.getElementById('content')
+      );
+    </script>
+
+  </body>
+</html>

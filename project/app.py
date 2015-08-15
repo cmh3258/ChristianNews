@@ -23,7 +23,7 @@ api = twitter.Api(consumer_key='m5pAMifKNfva3eLKZ9UF5br4k',
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('thesheep.html')
 
 @app.route('/hello')
 def hello():
