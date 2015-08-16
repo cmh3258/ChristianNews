@@ -59,8 +59,12 @@ def savepost():
   if not request.json:
     return 'No request.json', 400
   else:
+    post = request.json
+    post['is_saved'] = True
+    post['is_published'] = False
+    post['date_published'] = None
     posts = db.posts
-    post_id = posts.insert_one(request.json).inserted_id
+    post_id = posts.insert_one(post).inserted_id
     print 'JSON ', request.json
     print 'post_id: ', post_id
 
@@ -68,7 +72,7 @@ def savepost():
   # if not request.json:
   #   return 'No request.json'
   # # print request
-    return 'testing', 200
+    return 'Success', 200
 
 @app.route('/twit')
 def twit():

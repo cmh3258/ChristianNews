@@ -82,6 +82,9 @@
 
       // tutorial10.js
       var CommentList = React.createClass({
+        getInitialState: function() {
+          return {message: ''};
+        },
         handleClick: function(i) {
           console.log('You clicked: ', i);
           $.ajax({
@@ -91,10 +94,12 @@
             contentType: 'application/json;charset=UTF-8',
             success: function(data){
               console.log('success:', data);
-            },
+              this.setState({message: data});
+            }.bind(this),
             error: function(data) {
               console.error('savepost:', data);
-            }
+              this.setState({message: data});
+            }.bind(this)
             
             // success: function(data) {
             //   // this.setState({data: data});
@@ -116,6 +121,7 @@
                   <Comment name={comment.name} date={comment.date} favorite_count={comment.favorite_count} text={comment.text} profile_image={comment.profile_image} link_to_post={comment.link_to_post} img_in_post={comment.img_in_post} type_of_post={comment.type_of_post} outside_link={comment.outside_link}>
                   </Comment>
                   <button onClick={this.handleClick.bind(this, comment)}>save</button>
+                  <p>{this.state.message}</p>
                   </div>
                 );
               }, this)}
